@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Quick Electrician</title>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #007BFF; --secondary-color: #28a745; --danger-color: #dc3545; --warning-color: #ffc107; --dark-color: #343a40; --light-color: #f8f9fa; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--light-color); color: var(--dark-color); margin: 0; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 20px; }
+        header { background: var(--dark-color); color: white; padding: 1rem 0; text-align: center; margin-bottom: 2rem; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 2rem; overflow: hidden; }
+        .card-header { background: var(--primary-color); color: white; padding: 1rem; font-size: 1.2rem; font-weight: 600; }
+        .card-body { padding: 1.5rem; }
+        .booking-list { max-height: 500px; overflow-y: auto; }
+        .booking-item { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee; }
+        .booking-item:last-child { border-bottom: none; }
+        .booking-details p { margin: 0.2rem 0; }
+        .booking-details strong { color: #555; }
+        .booking-actions { margin-top: 10px; flex-shrink: 0; }
+        .booking-actions button { padding: 0.5rem 1rem; border: none; border-radius: 5px; color: white; cursor: pointer; margin-left: 0.5rem; font-size: 0.9rem; }
+        .btn-confirm { background: var(--secondary-color); }
+        .btn-cancel { background: var(--danger-color); }
+        .status-tag { padding: 0.25rem 0.6rem; border-radius: 15px; color: white; font-size: 0.8rem; font-weight: 600; }
+        .status-Pending { background: var(--warning-color); color: var(--dark-color); }
+        .status-Confirmed { background: var(--secondary-color); }
+        .status-Cancelled { background: var(--danger-color); }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;}
+        .btn-submit { background-color: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <header><h1>Quick Electrician - Admin Panel</h1></header>
+
+    <div class="container">
+        <!-- BOOKING MANAGEMENT CARD -->
+        <div class="card">
+            <div class="card-header">Recent Bookings</div>
+            <div class="card-body">
+                <div class="booking-list" id="booking-list">
+                    <p>Loading bookings...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- OFFER MANAGEMENT CARD -->
+        <div class="card">
+            <div class="card-header">Manage Website Offer</div>
+            <div class="card-body">
+                <form id="offer-form">
+                    <div class="form-group">
+                        <label for="offer-title">Offer Title</label>
+                        <input type="text" id="offer-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="offer-desc">Offer Description</label>
+                        <textarea id="offer-desc" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Update Offer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CHANGE THESE VALUES ---
+        const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co'; // यहाँ अपना Supabase URL पेस्ट करें
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4'; // यहाँ अपनी Supabase anon key पेस्ट करें
+
+        const { createClient } = supabase;
+        const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const bookingList = document.getElementById('booking-list');
+
+        // Fetch and display all bookings
+        async function fetchBookings() {
+            const { data, error } = await db.from('bookings').select('*').order('created_at', { ascending: false });
+            if (error) {
+                console.error('Error fetching bookings:', error);
+                bookingList.innerHTML = '<p>Error loading bookings.</p>';
+                return;
+            }
+            if (data.length === 0) {
+                bookingList.innerHTML = '<p>No bookings found.</p>';
+                return;
+            }
+
+            bookingList.innerHTML = data.map(booking => `
+                <div class="booking-item">
+                    <div class="booking-details">
+                        <p><strong>Name:</strong> ${booking.name} | <strong>Phone:</strong> ${booking.phone}</p>
+                        <p><strong>Service:</strong> ${booking.service}</p>
+                        <p><strong>Address:</strong> ${booking.address}</p>
+                        ${booking.message ? `<p><strong>Query:</strong> ${booking.message}</p>` : ''}
+                        <p><strong>Status:</strong> <span class="status-tag status-${booking.status}">${booking.status}</span></p>
+                    </div>
+                    <div class="booking-actions">
+                        <button class="btn-confirm" data-id="${booking.id}">Confirm</button>
+                        <button class="btn-cancel" data-id="${booking.id}">Cancel</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle booking status updates
+        bookingList.addEventListener('click', async (e) => {
+            if (e.target.matches('.btn-confirm, .btn-cancel')) {
+                const id = e.target.dataset.id;
+                const newStatus = e.target.matches('.btn-confirm') ? 'Confirmed' : 'Cancelled';
+                
+                const { error } = await db.from('bookings').update({ status: newStatus }).eq('id', id);
+                if (error) {
+                    console.error('Error updating status:', error);
+                    alert('Failed to update status.');
+                } else {
+                    alert(`Booking status updated to ${newStatus}.`);
+                    fetchBookings(); // Refresh the list
+                }
+            }
+        });
+
+        // --- Offer Management ---
+        const offerForm = document.getElementById('offer-form');
+        const offerTitleInput = document.getElementById('offer-title');
+        const offerDescInput = document.getElementById('offer-desc');
+
+        // Fetch and display the current offer
+        async function fetchOffer() {
+            const { data, error } = await db.from('offers').select('*').eq('id', 1).single();
+            if (error) {
+                console.error('Error fetching offer:', error);
+            } else {
+                offerTitleInput.value = data.title;
+                offerDescInput.value = data.description;
+            }
+        }
+
+        // Handle offer form submission
+        offerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitButton = offerForm.querySelector('.btn-submit');
+            submitButton.disabled = true;
+            submitButton.innerText = 'Updating...';
+
+            const { error } = await db.from('offers')
+                .update({ title: offerTitleInput.value, description: offerDescInput.value })
+                .eq('id', 1);
+
+            if (error) {
+                console.error('Error updating offer:', error);
+                alert('Failed to update offer.');
+            } else {
+                alert('Offer updated successfully on the website!');
+            }
+            submitButton.disabled = false;
+            submitButton.innerText = 'Update Offer';
+        });
+
+        // Initial data load when admin page opens
+        fetchBookings();
+        fetchOffer();
+    </script>
+</body>
+</html>
