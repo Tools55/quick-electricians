@@ -48,32 +48,31 @@
         .section { padding: 4rem 0; }
         .section-light { background: var(--light-color); }
         .section-title { text-align: center; font-size: 2.2rem; margin-bottom: 3rem; color: var(--primary-color); }
+        #why-us .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: center; }
+        .feature { background: var(--white-color); padding: 2rem; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); transition: transform 0.3s; }
+        .feature:hover { transform: translateY(-5px); }
+        .feature-icon { font-size: 3rem; color: var(--secondary-color); margin-bottom: 1rem; }
+        #offers { background: var(--primary-color); color: var(--white-color); }
+        #offers .section-title { color: var(--white-color); }
+        .offer-card { background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 10px; text-align: center; border: 2px dashed var(--secondary-color); }
+        .offer-card h3 { font-size: 1.8rem; color: var(--secondary-color); }
+        .offer-card p { font-size: 1.1rem; margin-top: 0.5rem; }
+        #how-it-works .steps { display: flex; justify-content: space-around; text-align: center; gap: 2rem; }
+        .step .step-number { background: var(--secondary-color); color: var(--dark-color); width: 60px; height: 60px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
         footer { background: var(--dark-color); color: var(--light-color); text-align: center; padding: 3rem 0 1.5rem 0; }
-        /* --- NEW STYLES for Booking History --- */
-        #my-bookings { padding-top: 0; } /* Remove padding if it follows another section */
-        .booking-history-item {
-            background: var(--white-color);
-            border: 1px solid #ddd;
-            border-left: 5px solid var(--primary-color);
-            padding: 1rem 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .contact-info p { margin: 0.5rem 0; }
+        .contact-info a { color: var(--white-color); text-decoration: none; transition: color 0.3s; }
+        .contact-info a:hover { color: var(--secondary-color); }
+        .social-icons a { margin: 0 0.75rem; }
+        .social-icons svg { width: 28px; height: 28px; fill: var(--white-color); transition: fill 0.3s; }
+        .social-icons a:hover svg { fill: var(--secondary-color); }
+        .copyright { margin-top: 2rem; font-size: 0.9rem; color: #aaa; }
+        #my-bookings { padding-top: 2rem; padding-bottom: 2rem; } 
+        .booking-history-item { background: var(--white-color); border: 1px solid #ddd; border-left: 5px solid var(--primary-color); padding: 1rem 1.5rem; margin-bottom: 1rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .booking-history-details p { margin: 0; font-size: 0.9rem; }
         .booking-history-details strong { font-size: 1rem; }
-        .booking-status {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: white;
-            margin-top: 5px;
-        }
+        .booking-status { padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem; color: white; margin-top: 5px; }
         .status-Pending { background-color: var(--pending-color); color: var(--dark-color); }
         .status-Completed, .status-Confirmed { background-color: var(--success-color); }
         .status-Cancelled { background-color: #dc3545; }
@@ -83,13 +82,23 @@
             .main-nav { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; background: white; width: 100%; text-align: center; padding: 1rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
             .main-nav.active { display: flex; }
             .menu-toggle { display: block; }
+            #how-it-works .steps { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <!-- Header is unchanged -->
+        <div class="container">
+            <a href="#" class="logo">Quick Electrician</a>
+            <nav class="main-nav" id="main-nav">
+                <a href="#hero">Home</a>
+                <a href="#my-bookings">My Bookings</a>
+                <a href="#offers">Offers</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <button class="menu-toggle" id="menu-toggle">☰</button>
+        </div>
     </header>
 
     <main>
@@ -126,9 +135,6 @@
             </div>
         </section>
 
-        <!-- ================================== -->
-        <!-- NEW SECTION: MY BOOKINGS -->
-        <!-- ================================== -->
         <section id="my-bookings" class="section section-light">
             <div class="container">
                 <h2 class="section-title">Your Recent Bookings</h2>
@@ -138,12 +144,84 @@
             </div>
         </section>
 
-        <!-- Other sections like Why-Us, Offers, etc. -->
+        <section id="why-us" class="section">
+            <div class="container">
+                <h2 class="section-title">Why Choose Us?</h2>
+                <div class="features">
+                    <div class="feature"><div class="feature-icon">★</div><h3>Hojai District Exclusive</h3><p>We are your local experts, serving every corner of Hojai.</p></div>
+                    <div class="feature"><div class="feature-icon">☀️</div><h3>Solar Specialists</h3><p>Experts in installation and repair of solar panels and inverters.</p></div>
+                    <div class="feature"><div class="feature-icon">✓</div><h3>Verified Electricians</h3><p>All our technicians are experienced, verified, and trustworthy.</p></div>
+                    <div class="feature"><div class="feature-icon">⏱️</div><h3>Fast Service</h3><p>We ensure prompt service at your doorstep right after your booking.</p></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="offers" class="section section-light">
+             <div class="container">
+                <h2 class="section-title">Current Offers</h2>
+                <div class="offer-card">
+                   <h3 id="offer-title">Loading...</h3>
+                   <p id="offer-description"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="section">
+            <div class="container">
+                <h2 class="section-title">How It Works</h2>
+                <div class="steps">
+                    <div class="step"><div class="step-number">1</div><h3>Book Service</h3><p>Fill the form or call us directly to book a service.</p></div>
+                    <div class="step"><div class="step-number">2</div><h3>Get Confirmation</h3><p>Our team will contact you to confirm the booking.</p></div>
+                    <div class="step"><div class="step-number">3</div><h3>Get Work Done</h3><p>Our electrician will arrive on time and complete the job.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================== -->
+        <!-- ADVERTISEMENT CODE STARTS HERE -->
+        <div class="container" style="text-align: center; padding: 20px 0;">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '0ba6209868f5caf024c80c56a26d19f3',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/0ba6209868f5caf024c80c56a26d19f3/invoke.js"></script>
+        </div>
+        <!-- ADVERTISEMENT CODE ENDS HERE -->
+        <!-- ================================== -->
 
     </main>
     
-    <footer>
-        <!-- Footer is unchanged -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <h2>Quick Electrician - Hojai</h2>
+                <div class="contact-info">
+                    <p>For any electrical issue, feel free to contact us:</p>
+                    <p>
+                        <strong>Call:</strong> <a href="tel:6002451157">6002451157</a> | 
+                        <a href="tel:6000010648">6000010648</a> | 
+                        <a href="tel:8822453293">8822453293</a>
+                    </p>
+                    <p><strong>Email:</strong> <a href="mailto:anar777h@gmail.com">anar777h@gmail.com</a></p>
+                </div>
+                <div class="social-icons">
+                    <!-- फेसबुक लिंक यहाँ डालें -->
+                    <a href="<!--https://www.facebook.com/share/1Apc6CwqR6/?mibextid=qi2Omg-->" target="_blank" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06c0 5.52 4.5 10.02 10 10.02s10-4.5 10-10.02C22 6.53 17.5 2.04 12 2.04zM16.5 12.06h-2.25v6.94h-2.75v-6.94H9.5v-2.5h2v-1.75c0-1.88.94-2.94 2.81-2.94h1.94v2.5h-1.31c-.69 0-.75.31-.75.81v1.38h2.06l-.25 2.5z"/></svg>
+                    </a>
+                    <!-- इंस्टाग्राम लिंक यहाँ डालें -->
+                    <a href="<!--https://www.instagram.com/anar965h?utm_source=qr&igsh=cWw5eDF5dHlicDdw -->" target="_blank" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24"><path d="M12 2c-2.72 0-3.05.01-4.12.06-1.06.05-1.79.22-2.42.46-.65.25-1.18.59-1.73 1.15-.55.55-.89 1.08-1.15 1.73-.24.63-.41 1.36-.46 2.42C2.01 8.95 2 9.28 2 12s.01 3.05.06 4.12c.05 1.06.22 1.79.46 2.42.25.65.59 1.18 1.15 1.73.55.55 1.08.89 1.73 1.15.63.24 1.36.41 2.42.46 1.07.05 1.4.06 4.12.06s3.05-.01 4.12-.06c1.06-.05 1.79-.22 2.42-.46.65-.25 1.18-.59 1.73-1.15.55-.55.89-1.08-1.15-1.73.24-.63-.41-1.36-.46-2.42.05-1.07.06-1.4.06-4.12s-.01-3.05-.06-4.12c-.05-1.06-.22-1.79-.46-2.42-.25-.65-.59-1.18-1.15-1.73-.55-.55-1.08-.89-1.73-1.15-.63-.24-1.36-.41-2.42-.46C15.05 2.01 14.72 2 12 2zm0 1.8c2.65 0 2.95.01 4 .06 1.02.05 1.58.21 1.9.34.42.16.73.37 1.08.72.35.35.56.66.72 1.08.13.32.29.88.34 1.9.05 1.05.06 1.35.06 4s-.01 2.95-.06 4c-.05 1.02-.21 1.58-.34 1.9-.16.42-.37.73-.72 1.08-.35.35-.66.56-1.08-.72-.32.13-.88.29-1.9.34-1.05.05-1.35.06-4 .06s-2.95-.01-4-.06c-1.02-.05-1.58-.21-1.9-.34-.42-.16-.73-.37-1.08-.72-.35-.35-.56-.66-.72-1.08-.13-.32-.29-.88-.34-1.9-.05-1.05-.06-1.35-.06-4s.01-2.95.06-4c.05-1.02.21 1.58.34-1.9.16-.42.37.73.72-1.08.35-.35.66-.56-1.08-.72.32-.13.88-.29 1.9-.34 1.05-.05 1.35-.06 4-.06zM12 7.25c-2.62 0-4.75 2.13-4.75 4.75S9.38 16.75 12 16.75 16.75 14.62 16.75 12 14.62 7.25 12 7.25zm0 7.7c-1.63 0-2.95-1.32-2.95-2.95s1.32-2.95 2.95-2.95 2.95 1.32 2.95 2.95-1.32 2.95-2.95 2.95zm4.8-8.1c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1 1.1-.49 1.1-1.1-.49-1.1-1.1-1.1z"/></svg>
+                    </a>
+                </div>
+                <p class="copyright">© 2024 Quick Electrician. All Rights Reserved.</p>
+            </div>
+        </div>
     </footer>
     
     <script>
@@ -154,11 +232,34 @@
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- NEW: Load booking history on page load ---
-        document.addEventListener('DOMContentLoaded', loadMyBookings);
+        // --- Load Offer & MyBookings on page load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOffer();
+            loadMyBookings();
+        });
 
+        // --- Mobile Menu Toggle ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const mainNav = document.getElementById('main-nav');
+        menuToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+        });
+
+        // --- Load Offer from Supabase ---
+        async function loadOffer() {
+            const { data, error } = await db.from('offers').select('title, description').eq('id', 1).single();
+            if (error) {
+                console.error('Error loading offer:', error);
+                document.getElementById('offer-title').innerText = 'Special Offer';
+                document.getElementById('offer-description').innerText = 'Contact us for latest discounts!';
+            } else {
+                document.getElementById('offer-title').innerText = data.title;
+                document.getElementById('offer-description').innerText = data.description;
+            }
+        }
+        
+        // --- Load customer booking history ---
         const bookingHistoryList = document.getElementById('booking-history-list');
-
         async function loadMyBookings() {
             const myBookingIds = JSON.parse(localStorage.getItem('myBookingIds')) || [];
             if (myBookingIds.length === 0) {
@@ -167,29 +268,28 @@
             }
 
             try {
-                const { data, error } = await db.from('bookings')
-                    .select('id, created_at, service, status')
-                    .in('id', myBookingIds)
-                    .order('created_at', { ascending: false });
-
+                const { data, error } = await db.from('bookings').select('id, created_at, service, status').in('id', myBookingIds).order('created_at', { ascending: false });
                 if (error) throw error;
-
                 if (data.length === 0) {
                      bookingHistoryList.innerHTML = '<p>No bookings found for your device.</p>';
                      return;
                 }
-
-                bookingHistoryList.innerHTML = data.map(booking => `
+                bookingHistoryList.innerHTML = data.map(booking => {
+                    // Normalize status for CSS class
+                    let status = booking.status || 'Pending';
+                    if (status === 'Confirmed') status = 'Completed'; // Treat Confirmed same as Completed for display
+                    
+                    return `
                     <div class="booking-history-item">
                         <div class="booking-history-details">
                             <strong>${booking.service}</strong>
                             <p>Booked on: ${new Date(booking.created_at).toLocaleDateString()}</p>
                         </div>
-                        <div class="booking-status status-${booking.status || 'Pending'}">
-                            ${booking.status || 'Pending'}
+                        <div class="booking-status status-${status}">
+                            ${status}
                         </div>
                     </div>
-                `).join('');
+                `}).join('');
 
             } catch (error) {
                 console.error('Error fetching your bookings:', error);
@@ -210,31 +310,24 @@
                 phone: document.getElementById('phone').value,
                 service: document.getElementById('service').value,
                 address: document.getElementById('address').value,
-                message: document.getElementById('message').value || null
+                message: document.getElementById('message').value || null,
+                status: 'Pending' // Set default status
             };
 
             try {
-                // We use .select() to get the ID of the newly created booking
                 const { data, error } = await db.from('bookings').insert(bookingData).select('id').single();
                 if (error) throw error;
                 
-                // --- NEW: Fireworks effect ---
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 
-                // --- NEW: Save booking ID to localStorage ---
                 const myBookingIds = JSON.parse(localStorage.getItem('myBookingIds')) || [];
-                myBookingIds.push(data.id);
+                if (!myBookingIds.includes(data.id)) {
+                    myBookingIds.push(data.id);
+                }
                 localStorage.setItem('myBookingIds', JSON.stringify(myBookingIds));
 
-                // --- NEW: Changed Alert Message ---
                 alert('Quick Electrician will contact you shortly');
                 form.reset();
-
-                // Refresh the booking list on the page
                 loadMyBookings();
 
             } catch (error) {
@@ -244,11 +337,6 @@
                 submitButton.disabled = false;
                 submitButton.innerText = 'Book Now';
             }
-        });
-
-        // Other scripts like mobile menu toggle can be added here if needed
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            document.getElementById('main-nav').classList.toggle('active');
         });
     </script>
 </body>
