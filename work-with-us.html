@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work With Us - Quick Electrician</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--primary-color:#007BFF;--secondary-color:#FFC107;--dark-color:#2c3e50;--light-color:#f4f4f4;--white-color:#fff}
+        body{font-family:'Poppins',sans-serif;margin:0;color:var(--dark-color);background-color:var(--light-color); line-height:1.6}*{margin:0;padding:0;box-sizing:border-box}
+        .container{max-width:1100px;margin:auto;padding:0 20px}
+        header{background:var(--white-color);padding:1rem 0;border-bottom:1px solid #ddd;position:sticky;top:0;z-index:1000}
+        header .container{display:flex;justify-content:space-between;align-items:center}
+        .logo{color:var(--primary-color);font-size:1.6rem;font-weight:700;text-decoration:none;flex-shrink:0}
+        .main-nav{display:flex;align-items:center;gap:1.2rem;overflow-x:auto;padding-bottom:10px;scrollbar-width:thin}
+        .main-nav::-webkit-scrollbar{height:4px;background:transparent}
+        .main-nav::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px}
+        .main-nav a{text-decoration:none;color:var(--dark-color);font-weight:600;padding:5px 8px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .3s}
+        .main-nav a:hover,.main-nav a.active{color:var(--primary-color);border-color:var(--primary-color)}
+        .ad-slot-top{text-align:center;padding:10px 0;background-color:#f0f0f0; min-height: 60px; display: flex; align-items: center; justify-content: center;}
+        .section{padding:4rem 0}.section-title{text-align:center;font-size:2.2rem;margin-bottom:3rem;color:var(--primary-color)}
+        .application-form{background:var(--white-color);max-width:600px;margin:auto;padding:2rem;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+        .form-group{margin-bottom:1.5rem}
+        .form-group label{display:block;margin-bottom:.5rem;font-weight:600}
+        .form-group input,.form-group textarea{width:100%;padding:.8rem;border-radius:5px;border:1px solid #ccc;font-size:1rem; box-sizing: border-box;}
+        .submit-btn{width:100%;background:var(--primary-color);color:var(--white-color);padding:.9rem;border:none;border-radius:5px;font-size:1.2rem;font-weight:700;cursor:pointer}
+        footer{background:var(--dark-color);color:var(--light-color);text-align:center;padding:3rem 0 1.5rem 0}
+        @media(max-width:900px){.logo{font-size:1.4rem;}.main-nav a{padding:5px;gap:.8rem}}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo">Quick Electrician</a>
+            <nav class="main-nav" id="main-nav">
+                <a href="index.html">Home</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="products.html">Products</a>
+                <a href="about-solar.html">About Solar</a>
+                <a href="work-with-us.html" class="active">Work With Us</a>
+                <a href="index.html#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="ad-slot-top">
+        <p style="margin:0;font-size:0.8rem;color:#888;">Your Banner Ad Here</p>
+    </div>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <h1 class="section-title">Join Our Team</h1>
+                <p style="text-align:center; margin-top:-2rem; margin-bottom:2rem;">Are you a skilled electrician in Hojai? Fill out the form below to work with us.</p>
+
+                <div class="application-form">
+                    <form id="work-form">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                             <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" required>
+                        </div>
+                         <div class="form-group">
+                            <label for="experience">Years of Experience</label>
+                            <input type="number" id="experience" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="specialty">Your Specialty (e.g., Solar, House Wiring, etc.)</label>
+                            <textarea id="specialty" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Apply Now</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+     <footer id="contact">
+         <div class="container">
+            <!-- यहाँ आपका पूरा फुटर कोड आएगा... -->
+        </div>
+    </footer>
+    
+    <script>
+        // --- CHANGE THESE VALUES ---
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // यहाँ अपना Supabase URL पेस्ट करें
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // यहाँ अपनी Supabase anon key पेस्ट करें
+
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        document.getElementById('work-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitButton = form.querySelector('.submit-btn');
+            submitButton.disabled = true;
+            submitButton.innerText = 'Submitting...';
+
+            const applicantData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                experience: document.getElementById('experience').value,
+                specialty: document.getElementById('specialty').value
+            };
+
+            try {
+                const { error } = await db.from('applicants').insert(applicantData);
+                if (error) throw error;
+                
+                alert('Thank you for applying! We will review your application and contact you soon.');
+                form.reset();
+
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                alert('There was an error. Please try again.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerText = 'Apply Now';
+            }
+        });
+    </script>
+</body>
+</html>
