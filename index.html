@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root{--primary-color:#007BFF;--secondary-color:#FFC107;--dark-color:#2c3e50;--light-color:#f4f4f4;--white-color:#fff;--success-color:#28a745;--pending-color:#ffc107}
+        :root{--primary-color:#007BFF;--secondary-color:#FFC107;--dark-color:#2c3e50;--light-color:#f4f4f4;--white-color:#fff;--success-color:#28a745;--pending-color:#ffc107; --info-color: #17a2b8;}
         *{margin:0;padding:0;box-sizing:border-box}
         html{scroll-behavior:smooth}
         body{font-family:'Poppins',sans-serif;line-height:1.6;color:var(--dark-color)}
@@ -49,13 +49,13 @@
         .booking-history-details strong{font-size:1rem}
         .booking-status{padding:.3rem .8rem;border-radius:20px;font-weight:600;font-size:.8rem;color:white;margin-top:5px}
         .status-Pending{background-color:var(--pending-color);color:var(--dark-color)}
-        .status-Completed,.status-Confirmed{background-color:var(--success-color)}
+        .status-Confirmed{background-color:var(--info-color)}
+        .status-Completed{background-color:var(--success-color)}
         .status-Cancelled{background-color:#dc3545}
         @media(max-width:900px){.logo{font-size:1.4rem;}.main-nav a{padding:5px;gap:.8rem}}
     </style>
 </head>
 <body>
-
     <header>
         <div class="container">
             <a href="index.html" class="logo">Quick Electrician</a>
@@ -69,20 +69,12 @@
             </nav>
         </div>
     </header>
-
     <div class="ad-slot-top">
         <script type="text/javascript">
-            atOptions = {
-                'key' : 'b35605310d7c598daf6d6f711fac358b',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
+            atOptions = {'key' : 'b35605310d7c598daf6d6f711fac358b','format' : 'iframe','height' : 90,'width' : 728,'params' : {}};
         </script>
         <script type="text/javascript" src="//www.highperformanceformat.com/b35605310d7c598daf6d6f711fac358b/invoke.js"></script>
     </div>
-
     <main>
         <section id="hero">
             <div class="container">
@@ -107,23 +99,19 @@
                 </div>
             </div>
         </section>
-
         <section id="my-bookings" class="section section-light">
             <div class="container">
                 <h2 class="section-title">Your Recent Bookings</h2>
                 <div id="booking-history-list"><p>You have no recent bookings. Fill the form above to create one!</p></div>
             </div>
         </section>
-
         <div class="container" style="text-align: center; padding: 20px 0;">
             <script type="text/javascript">
                 atOptions = {'key' : '0ba6209868f5caf024c80c56a26d19f3','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};
             </script>
             <script type="text/javascript" src="//www.highperformanceformat.com/0ba6209868f5caf024c80c56a26d19f3/invoke.js"></script>
         </div>
-
     </main>
-    
     <footer id="contact">
         <div class="container">
             <div class="footer-content">
@@ -141,12 +129,57 @@
             </div>
         </div>
     </footer>
-    
     <script>
         const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        document.addEventListener('DOMContentLoaded',()=>loadMyBookings());const bookingHistoryList=document.getElementById('booking-history-list');async function loadMyBookings(){const o=JSON.parse(localStorage.getItem('myBookingIds'))||[];if(0===o.length)return void(bookingHistoryList.innerHTML='<p>You have no recent bookings. Fill the form above to create one!</p>');try{const{data:e,error:t}=await db.from('bookings').select('id, created_at, service, status').in('id',o).order('created_at',{ascending:!1});if(t)throw t;bookingHistoryList.innerHTML=0===e.length?'<p>No bookings found for your device.</p>':e.map(o=>{let e=o.status||'Pending';return'Confirmed'===e&&(e='Completed'),`\n <div class="booking-history-item">\n <div class="booking-history-details">\n <strong>${o.service}</strong>\n <p>Booked on: ${new Date(o.created_at).toLocaleDateString()}</p>\n </div>\n <div class="booking-status status-${e}">\n ${e}\n </div>\n </div>`}).join('')}catch(o){console.error('Error fetching your bookings:',o),bookingHistoryList.innerHTML='<p>Could not load your booking history.</p>'}}document.getElementById('main-form').addEventListener('submit',async function(o){o.preventDefault();const e=o.target,t=e.querySelector('.submit-btn');t.disabled=!0,t.innerText='Submitting...';const a={name:document.getElementById('name').value,phone:document.getElementById('phone').value,service:document.getElementById('service').value,address:document.getElementById('address').value,message:document.getElementById('message').value||null,status:'Pending'};try{const{data:o,error:i}=await db.from('bookings').insert(a).select('id').single();if(i)throw i;confetti({particleCount:100,spread:70,origin:{y:.6}});const n=JSON.parse(localStorage.getItem('myBookingIds'))||[];n.includes(o.id)||n.push(o.id),localStorage.setItem('myBookingIds',JSON.stringify(n)),alert('Quick Electrician will contact you shortly'),e.reset(),loadMyBookings()}catch(o){console.error('Error submitting booking:',o),alert('There was an error submitting your booking. Please try again or call us directly.')}finally{t.disabled=!1,t.innerText='Book Now'}});
+        document.addEventListener('DOMContentLoaded',()=>loadMyBookings());
+        const bookingHistoryList=document.getElementById('booking-history-list');
+        async function loadMyBookings(){
+            const o=JSON.parse(localStorage.getItem('myBookingIds'))||[];
+            if(0===o.length) return void(bookingHistoryList.innerHTML='<p>You have no recent bookings. Fill the form above to create one!</p>');
+            try {
+                const {data:e,error:t}=await db.from('bookings').select('id, created_at, service, status').in('id',o).order('created_at',{ascending:!1});
+                if(t) throw t;
+                bookingHistoryList.innerHTML = 0===e.length ? '<p>No bookings found for your device.</p>' : e.map(o => {
+                    let e = o.status || 'Pending';
+                    return `
+                        <div class="booking-history-item">
+                            <div class="booking-history-details">
+                                <strong>${o.service}</strong>
+                                <p>Booked on: ${new Date(o.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <div class="booking-status status-${e}">
+                                ${e}
+                            </div>
+                        </div>`;
+                }).join('');
+            } catch (o) {
+                console.error('Error fetching your bookings:', o);
+                bookingHistoryList.innerHTML = '<p>Could not load your booking history.</p>';
+            }
+        }
+        document.getElementById('main-form').addEventListener('submit',async function(o){
+            o.preventDefault();
+            const e=o.target,t=e.querySelector('.submit-btn');
+            t.disabled=!0,t.innerText='Submitting...';
+            const a={name:document.getElementById('name').value,phone:document.getElementById('phone').value,service:document.getElementById('service').value,address:document.getElementById('address').value,message:document.getElementById('message').value||null,status:'Pending'};
+            try {
+                const {data:o,error:i} = await db.from('bookings').insert(a).select('id').single();
+                if(i) throw i;
+                confetti({particleCount:100,spread:70,origin:{y:.6}});
+                const n=JSON.parse(localStorage.getItem('myBookingIds'))||[];
+                n.includes(o.id)||n.push(o.id),localStorage.setItem('myBookingIds',JSON.stringify(n));
+                alert('Quick Electrician will contact you shortly');
+                e.reset();
+                loadMyBookings();
+            } catch(o) {
+                console.error('Error submitting booking:',o);
+                alert('There was an error submitting your booking. Please try again or call us directly.');
+            } finally {
+                t.disabled=!1,t.innerText='Book Now';
+            }
+        });
     </script>
 </body>
 </html>
