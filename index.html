@@ -19,29 +19,13 @@
         header{background:var(--white-color);padding:1rem 0;border-bottom:1px solid #ddd;position:sticky;top:0;z-index:1000}
         header .container{display:flex;justify-content:space-between;align-items:center}
         .logo{color:var(--primary-color);font-size:1.6rem;font-weight:700;text-decoration:none;flex-shrink:0}
-        
-        /* --- NEW STYLES FOR SCROLLABLE MENU ON MOBILE --- */
-        .main-nav{
-            display:flex;
-            align-items:center;
-            gap:1.2rem;
-            overflow-x:auto; /* Allows horizontal scrolling */
-            padding-bottom:10px; /* Space for the scrollbar */
-            scrollbar-width: thin; /* For Firefox */
-            -ms-overflow-style: none; /* For IE and Edge */
-        }
-        .main-nav::-webkit-scrollbar{height:4px; background: transparent;} /* For Chrome, Safari and Opera */
+        .main-nav{display:flex;align-items:center;gap:1.2rem;overflow-x:auto;padding-bottom:10px;scrollbar-width:thin;-ms-overflow-style:none}
+        .main-nav::-webkit-scrollbar{height:4px;background:transparent}
         .main-nav::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px}
-        
         .main-nav a{text-decoration:none;color:var(--dark-color);font-weight:600;padding:5px 8px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .3s}
         .main-nav a:hover,.main-nav a.active{color:var(--primary-color);border-color:var(--primary-color)}
-        
-        /* Hide the hamburger menu toggle */
         .menu-toggle{display:none}
-
-        /* --- NEW STYLES FOR TOP BANNER AD --- */
-        .ad-slot-top{text-align:center;padding:10px 0;background-color:#f0f0f0; min-height: 60px; display: flex; align-items: center; justify-content: center;}
-        
+        .ad-slot-top{text-align:center;padding:10px 0;background-color:#f0f0f0;min-height:90px;display:flex;align-items:center;justify-content:center;overflow:hidden}
         #hero{background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop') no-repeat center center/cover;color:var(--white-color);padding:5rem 0;text-align:center}
         #hero h2{font-size:2.8rem;margin-bottom:.5rem;text-shadow:2px 2px 4px rgba(0,0,0,.5)}
         #hero p{font-size:1.2rem;margin-bottom:2rem;max-width:600px;margin-left:auto;margin-right:auto}
@@ -83,22 +67,20 @@
                 <a href="work-with-us.html">Work With Us</a>
                 <a href="#contact">Contact</a>
             </nav>
-            <button class="menu-toggle" id="menu-toggle">☰</button>
         </div>
     </header>
 
     <div class="ad-slot-top">
-         <script type="text/javascript">
-	atOptions = {
-		'key' : 'b35605310d7c598daf6d6f711fac358b',
-		'format' : 'iframe',
-		'height' : 90,
-		'width' : 728,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/b35605310d7c598daf6d6f711fac358b/invoke.js"></script>
-        <p style="margin:0;font-size:0.8rem;color:#888;">Your Banner Ad Here (e.g., 728x90)</p>
+        <script type="text/javascript">
+            atOptions = {
+                'key' : 'b35605310d7c598daf6d6f711fac358b',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b35605310d7c598daf6d6f711fac358b/invoke.js"></script>
     </div>
 
     <main>
@@ -133,14 +115,12 @@
             </div>
         </section>
 
-        <!-- ADVERTISEMENT CODE STARTS HERE -->
         <div class="container" style="text-align: center; padding: 20px 0;">
             <script type="text/javascript">
                 atOptions = {'key' : '0ba6209868f5caf024c80c56a26d19f3','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};
             </script>
             <script type="text/javascript" src="//www.highperformanceformat.com/0ba6209868f5caf024c80c56a26d19f3/invoke.js"></script>
         </div>
-        <!-- ADVERTISEMENT CODE ENDS HERE -->
 
     </main>
     
@@ -166,7 +146,7 @@
         const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        document.addEventListener('DOMContentLoaded',()=>loadMyBookings());const menuToggle=document.getElementById('menu-toggle'),mainNav=document.getElementById('main-nav');menuToggle.addEventListener('click',()=>{mainNav.classList.toggle('active')});const bookingHistoryList=document.getElementById('booking-history-list');async function loadMyBookings(){const o=JSON.parse(localStorage.getItem('myBookingIds'))||[];if(0===o.length)return void(bookingHistoryList.innerHTML='<p>You have no recent bookings. Fill the form above to create one!</p>');try{const{data:e,error:t}=await db.from('bookings').select('id, created_at, service, status').in('id',o).order('created_at',{ascending:!1});if(t)throw t;bookingHistoryList.innerHTML=0===e.length?'<p>No bookings found for your device.</p>':e.map(o=>{let e=o.status||'Pending';return'Confirmed'===e&&(e='Completed'),`\n <div class="booking-history-item">\n <div class="booking-history-details">\n <strong>${o.service}</strong>\n <p>Booked on: ${new Date(o.created_at).toLocaleDateString()}</p>\n </div>\n <div class="booking-status status-${e}">\n ${e}\n </div>\n </div>`}).join('')}catch(o){console.error('Error fetching your bookings:',o),bookingHistoryList.innerHTML='<p>Could not load your booking history.</p>'}}document.getElementById('main-form').addEventListener('submit',async function(o){o.preventDefault();const e=o.target,t=e.querySelector('.submit-btn');t.disabled=!0,t.innerText='Submitting...';const a={name:document.getElementById('name').value,phone:document.getElementById('phone').value,service:document.getElementById('service').value,address:document.getElementById('address').value,message:document.getElementById('message').value||null,status:'Pending'};try{const{data:o,error:i}=await db.from('bookings').insert(a).select('id').single();if(i)throw i;confetti({particleCount:100,spread:70,origin:{y:.6}});const n=JSON.parse(localStorage.getItem('myBookingIds'))||[];n.includes(o.id)||n.push(o.id),localStorage.setItem('myBookingIds',JSON.stringify(n)),alert('Quick Electrician will contact you shortly'),e.reset(),loadMyBookings()}catch(o){console.error('Error submitting booking:',o),alert('There was an error submitting your booking. Please try again or call us directly.')}finally{t.disabled=!1,t.innerText='Book Now'}});
+        document.addEventListener('DOMContentLoaded',()=>loadMyBookings());const bookingHistoryList=document.getElementById('booking-history-list');async function loadMyBookings(){const o=JSON.parse(localStorage.getItem('myBookingIds'))||[];if(0===o.length)return void(bookingHistoryList.innerHTML='<p>You have no recent bookings. Fill the form above to create one!</p>');try{const{data:e,error:t}=await db.from('bookings').select('id, created_at, service, status').in('id',o).order('created_at',{ascending:!1});if(t)throw t;bookingHistoryList.innerHTML=0===e.length?'<p>No bookings found for your device.</p>':e.map(o=>{let e=o.status||'Pending';return'Confirmed'===e&&(e='Completed'),`\n <div class="booking-history-item">\n <div class="booking-history-details">\n <strong>${o.service}</strong>\n <p>Booked on: ${new Date(o.created_at).toLocaleDateString()}</p>\n </div>\n <div class="booking-status status-${e}">\n ${e}\n </div>\n </div>`}).join('')}catch(o){console.error('Error fetching your bookings:',o),bookingHistoryList.innerHTML='<p>Could not load your booking history.</p>'}}document.getElementById('main-form').addEventListener('submit',async function(o){o.preventDefault();const e=o.target,t=e.querySelector('.submit-btn');t.disabled=!0,t.innerText='Submitting...';const a={name:document.getElementById('name').value,phone:document.getElementById('phone').value,service:document.getElementById('service').value,address:document.getElementById('address').value,message:document.getElementById('message').value||null,status:'Pending'};try{const{data:o,error:i}=await db.from('bookings').insert(a).select('id').single();if(i)throw i;confetti({particleCount:100,spread:70,origin:{y:.6}});const n=JSON.parse(localStorage.getItem('myBookingIds'))||[];n.includes(o.id)||n.push(o.id),localStorage.setItem('myBookingIds',JSON.stringify(n)),alert('Quick Electrician will contact you shortly'),e.reset(),loadMyBookings()}catch(o){console.error('Error submitting booking:',o),alert('There was an error submitting your booking. Please try again or call us directly.')}finally{t.disabled=!1,t.innerText='Book Now'}});
     </script>
 </body>
 </html>
