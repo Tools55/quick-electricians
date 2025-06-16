@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Registration - Quick Electrician</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>:root{--primary-color:#007BFF;--dark-color:#2c3e50;--light-color:#f4f4f4}body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0;padding:2rem}.container{max-width:600px;margin:auto;background:white;padding:2rem;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.1)}h1{text-align:center;color:var(--primary-color);margin-bottom:2rem}.form-group{margin-bottom:1.5rem}.form-group label{display:block;margin-bottom:.5rem;font-weight:600}.form-group input{width:100%;padding:.8rem;box-sizing:border-box;border-radius:5px;border:1px solid #ccc}.submit-btn{width:100%;padding:1rem;font-size:1.2rem;color:white;background:var(--primary-color);border:none;border-radius:8px;cursor:pointer}.submit-btn:disabled{background:#ccc}#selfie-container{text-align:center;margin-bottom:1rem}#selfie-video,#selfie-canvas{max-width:100%;border-radius:8px}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Partner Registration (Secure)</h1>
+        <form id="register-form">
+            <div class="form-group"><label for="name">Full Name</label><input type="text" id="name" required></div>
+            <div class="form-group"><label for="email">Email ID</label><input type="email" id="email" required></div>
+            <div class="form-group"><label for="phone">Phone Number (Login ID)</label><input type="tel" id="phone" required></div>
+            <div class="form-group"><label for="password">Create Password</label><input type="password" id="password" required></div>
+            <hr style="margin: 2rem 0;">
+            <h3>Document Upload</h3>
+            <div class="form-group"><label for="pan-number">PAN Number</label><input type="text" id="pan-number" required></div>
+            <div class="form-group"><label for="aadhaar-front">Aadhaar Card (Front Side)</label><input type="file" id="aadhaar-front" accept="image/*" required></div>
+            <div class="form-group"><label for="aadhaar-back">Aadhaar Card (Back Side)</label><input type="file" id="aadhaar-back" accept="image/*" required></div>
+            <div class="form-group"><label for="pan-card">PAN Card</label><input type="file" id="pan-card" accept="image/*" required></div>
+            <hr style="margin: 2rem 0;">
+            <h3>Live Selfie Verification</h3>
+            <div id="selfie-container">
+                <video id="selfie-video" autoplay playsinline></video>
+                <canvas id="selfie-canvas" style="display:none;"></canvas>
+                <button type="button" id="take-selfie-btn" class="submit-btn" style="background-color:#555; margin-top:1rem;">1. Start Camera</button>
+            </div>
+            <button type="submit" class="submit-btn" id="register-btn" disabled>Register</button>
+        </form>
+         <p style="text-align:center; margin-top:1rem;">Already have an account? <a href="partner.html">Login Here</a></p>
+    </div>
+    <script>
+        const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const video = document.getElementById('selfie-video');
+        const canvas = document.getElementById('selfie-canvas');
+        const takeSelfieBtn = document.getElementById('take-selfie-btn');
+        const registerBtn = document.getElementById('register-btn');
+        let selfieBlob = null;
+
+        takeSelfieBtn.addEventListener('click', async () => {
+            if (takeSelfieBtn.innerText.includes('Start Camera')) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    video.srcObject = stream;
+                    takeSelfieBtn.innerText = '2. Take Selfie';
+                } catch (err) { alert('Could not access camera. Please allow camera access.'); console.error("Camera error:", err); }
+            } else {
+                canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                video.srcObject.getTracks().forEach(track => track.stop());
+                video.style.display = 'none'; canvas.style.display = 'block';
+                takeSelfieBtn.innerText = 'Selfie Taken!'; takeSelfieBtn.disabled = true;
+                canvas.toBlob(blob => { selfieBlob = blob; }, 'image/jpeg');
+                registerBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            registerBtn.disabled = true; registerBtn.innerText = 'Uploading... Please Wait...';
+            try {
+                const phone = document.getElementById('phone').value;
+                const aadhaarFrontFile = document.getElementById('aadhaar-front').files[0];
+                const aadhaarBackFile = document.getElementById('aadhaar-back').files[0];
+                const panFile = document.getElementById('pan-card').files[0];
+                if (!aadhaarFrontFile || !aadhaarBackFile || !panFile || !selfieBlob) { throw new Error('All files and selfie are required.'); }
+
+                const uploadFile = async (file, bucket, folder) => {
+                    const filePath = `${folder}/${Date.now()}-${file.name}`;
+                    const { data, error } = await db.storage.from(bucket).upload(filePath, file);
+                    if (error) throw error;
+                    return db.storage.from(bucket).getPublicUrl(data.path).data.publicUrl;
+                };
+                const uploadSelfie = async (blob, bucket, folder) => {
+                    const filePath = `${folder}/${Date.now()}-selfie.jpeg`;
+                    const { data, error } = await db.storage.from(bucket).upload(filePath, blob);
+                    if (error) throw error;
+                    return db.storage.from(bucket).getPublicUrl(data.path).data.publicUrl;
+                };
+
+                const [aadhaarFrontUrl, aadhaarBackUrl, panUrl, selfieUrl] = await Promise.all([
+                    uploadFile(aadhaarFrontFile, 'documents', `aadhaar-front/${phone}`),
+                    uploadFile(aadhaarBackFile, 'documents', `aadhaar-back/${phone}`),
+                    uploadFile(panFile, 'documents', `pan-card/${phone}`),
+                    uploadSelfie(selfieBlob, 'selfies', `live-selfie/${phone}`)
+                ]);
+
+                const { error: insertError } = await db.from('electricians').insert({
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: phone,
+                    password: document.getElementById('password').value,
+                    pan_number: document.getElementById('pan-number').value,
+                    aadhaar_front_url: aadhaarFrontUrl,
+                    aadhaar_back_url: aadhaarBackUrl,
+                    pan_card_url: panUrl,
+                    selfie_url: selfieUrl
+                });
+                if (insertError) throw insertError;
+                alert('Registration successful! Please wait for admin to verify your account.');
+                window.location.href = 'partner.html';
+            } catch (error) {
+                alert('An error occurred. Please check all fields and try again.');
+                console.error(error);
+                registerBtn.disabled = false; registerBtn.innerText = 'Register';
+            }
+        });
+    </script>
+</body>
+</html>
