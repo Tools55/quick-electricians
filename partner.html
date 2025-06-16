@@ -3,168 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partner Panel - Quick Electrician</title>
+    <title>Partner Login - Quick Electrician</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root{--primary-color:#007BFF;--secondary-color:#28a745;--danger-color:#dc3545; --dark-color:#2c3e50;--light-color:#f4f4f4;--white-color:#fff;}
-        body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0;padding:1rem;}
-        .container{max-width:600px;margin:auto;background:var(--white-color);padding:2rem;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-        h1, h2{text-align:center;color:var(--primary-color);margin-bottom:1.5rem;}
-        .toggle-container{text-align:center;margin-bottom:2rem;}
-        .availability-toggle{position:relative;width:200px;height:50px;margin:auto;background:#ccc;border-radius:25px;cursor:pointer;transition:background-color .3s;}
-        .availability-toggle.online{background-color:var(--secondary-color);}
-        .toggle-switch{position:absolute;top:5px;left:5px;width:40px;height:40px;background:white;border-radius:50%;transition:left .3s;}
-        .availability-toggle.online .toggle-switch{left:155px;}
-        .status-text{font-weight:600;font-size:1.2rem;margin-top:0.5rem;}
-        .booking-card{border:1px solid #ddd;padding:1.5rem;border-radius:8px;margin-top:1.5rem;box-shadow: 0 2px 8px rgba(0,0,0,0.1); animation: fadeIn 0.5s;}
-        .booking-card h3{margin-top:0;}
-        .booking-card p{margin:0.5rem 0;}
-        .btn{width:100%;padding:1rem;font-size:1.2rem;color:white;border:none;border-radius:8px;cursor:pointer;margin-top:1rem;}
-        .btn-accept{background-color:var(--secondary-color);}
-        .btn-reject{background-color:#dc3545; margin-top: 0.5rem;}
-        #login-section input {width:100%; padding:0.8rem; box-sizing: border-box; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 1rem;}
-        @keyframes fadeIn {from {opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);}}
-    </style>
+    <style>:root{--primary-color:#007BFF;--secondary-color:#28a745;--dark-color:#2c3e50;--light-color:#f4f4f4}body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0;padding:2rem}.container{max-width:500px;margin:auto;background:white;padding:2rem;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.1)}h1,h2{text-align:center;color:var(--primary-color);margin-bottom:1.5rem}.toggle-container{text-align:center;margin-bottom:2rem}.availability-toggle{position:relative;width:200px;height:50px;margin:auto;background:#ccc;border-radius:25px;cursor:pointer;transition:background-color .3s}.availability-toggle.online{background-color:var(--secondary-color)}.toggle-switch{position:absolute;top:5px;left:5px;width:40px;height:40px;background:white;border-radius:50%;transition:left .3s}.availability-toggle.online .toggle-switch{left:155px}.status-text{font-weight:600;font-size:1.2rem;margin-top:.5rem}.booking-card{border:1px solid #ddd;padding:1.5rem;border-radius:8px;margin-top:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.1);animation:fadeIn .5s}.btn{width:100%;padding:1rem;font-size:1.2rem;color:white;border:none;border-radius:8px;cursor:pointer;margin-top:1rem}.btn-accept{background-color:var(--secondary-color)}.form-group{margin-bottom:1rem}.form-group label{display:block;margin-bottom:.5rem}.form-group input{width:100%;padding:.8rem;box-sizing:border-box;border-radius:5px;border:1px solid #ccc}@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}</style>
 </head>
 <body>
     <div class="container">
-        <h1>Partner Panel</h1>
-        <div id="auth-section">
-            <h2>Enter Your Phone Number</h2>
-            <input type="tel" id="partner-phone" placeholder="e.g., 9876543210">
-            <button class="btn btn-accept" id="login-btn">Login / Register</button>
+        <div id="login-section">
+            <h1>Partner Login</h1>
+            <form id="login-form">
+                <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" required></div>
+                <div class="form-group"><label for="password">Password</label><input type="password" id="password" required></div>
+                <button type="submit" class="btn btn-accept">Login</button>
+            </form>
+            <p style="text-align:center; margin-top:1rem;">Don't have an account? <a href="register-partner.html">Register Here</a></p>
         </div>
         <div id="dashboard-section" style="display: none;">
             <p id="welcome-message" style="text-align:center; font-weight:bold;"></p>
-            <div class="toggle-container">
-                <div id="availability-toggle" class="availability-toggle">
-                    <div class="toggle-switch"></div>
-                </div>
-                <p class="status-text" id="status-text">You are Offline</p>
-            </div>
-            <hr>
-            <h2>New Bookings</h2>
-            <div id="new-booking-notification">
-                <p>Waiting for new bookings...</p>
-            </div>
+            <div class="toggle-container"><div id="availability-toggle" class="availability-toggle"><div class="toggle-switch"></div></div><p class="status-text" id="status-text">You are Offline</p></div>
+            <hr><h2>New Bookings</h2><div id="new-booking-notification"><p>Waiting for new bookings...</p></div>
+            <button id="logout-btn" class="btn" style="background-color:#dc3545;">Logout</button>
         </div>
     </div>
-
     <script>
         const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let myProfile = null; let bookingChannel = null;
+        const loginSection = document.getElementById('login-section');
+        const dashboardSection = document.getElementById('dashboard-section');
 
-        let myProfile = null;
-        const authSection = document.getElementById('auth-section');
-        const dashboard = document.getElementById('dashboard-section');
-        const toggle = document.getElementById('availability-toggle');
-        const statusText = document.getElementById('status-text');
-        const bookingNotification = document.getElementById('new-booking-notification');
-        const loginBtn = document.getElementById('login-btn');
-        const phoneInput = document.getElementById('partner-phone');
-        const welcomeMessage = document.getElementById('welcome-message');
-
-        loginBtn.addEventListener('click', async () => {
-            const phone = phoneInput.value.trim();
-            if (!phone) return alert('Please enter your phone number.');
-            
-            let { data, error } = await db.from('electricians').select().eq('phone', phone).single();
-
-            if (!data) {
-                const name = prompt("Welcome! Please enter your name to register:");
-                if (!name) return;
-                const { data: newProfile, error: createError } = await db.from('electricians').insert({ name, phone }).select().single();
-                if (createError) return alert('Registration failed.');
-                myProfile = newProfile;
-            } else {
-                myProfile = data;
-            }
-            
-            localStorage.setItem('electricianPhone', phone);
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = await db.from('electricians').select().eq('phone', phone).single();
+            if (error || !data) return alert('Login failed: User not found.');
+            if (!data.is_verified) return alert('Login failed: Your account is not yet verified by the admin.');
+            if (data.password !== password) return alert('Login failed: Incorrect password.');
+            myProfile = data;
+            localStorage.setItem('electricianId', myProfile.id);
             showDashboard();
         });
+        
+        async function checkLogin() {
+            const loggedInId = localStorage.getItem('electricianId');
+            if (loggedInId) {
+                const { data, error } = await db.from('electricians').select().eq('id', loggedInId).single();
+                if (data) { myProfile = data; showDashboard(); }
+            }
+        }
+        checkLogin();
 
-        function showDashboard() {
-            authSection.style.display = 'none';
-            dashboard.style.display = 'block';
-            welcomeMessage.innerText = `Welcome, ${myProfile.name}!`;
-            updateToggleUI(myProfile.is_online);
-            listenForNewBookings();
+        function showDashboard(){
+            loginSection.style.display = 'none'; dashboardSection.style.display = 'block';
+            document.getElementById('welcome-message').innerText = `Welcome, ${myProfile.name}!`;
+            updateToggleUI(myProfile.is_online); listenForNewBookings();
+        }
+        
+        function updateToggleUI(isOnline) {
+            const toggle = document.getElementById('availability-toggle');
+            if (isOnline) { toggle.classList.add('online'); } else { toggle.classList.remove('online'); }
+            document.getElementById('status-text').textContent = isOnline ? 'You are Online' : 'You are Offline';
         }
 
-        toggle.addEventListener('click', async () => {
-            const newStatus = !toggle.classList.contains('online');
-            updateToggleUI(newStatus);
-            const { error } = await db.from('electricians').update({ is_online: newStatus }).eq('id', myProfile.id);
-            if (error) {
-                alert("Could not update status.");
-                updateToggleUI(!newStatus);
-            }
+        document.getElementById('availability-toggle').addEventListener('click', async () => {
+             const newStatus = !document.getElementById('availability-toggle').classList.contains('online');
+             updateToggleUI(newStatus);
+             await db.from('electricians').update({ is_online: newStatus }).eq('id', myProfile.id);
         });
 
-        function updateToggleUI(isOnline) {
-            if (isOnline) {
-                toggle.classList.add('online');
-                statusText.textContent = 'You are Online';
-            } else {
-                toggle.classList.remove('online');
-                statusText.textContent = 'You are Offline';
-            }
-        }
-
         function listenForNewBookings() {
-            console.log("Listening for new bookings...");
-            db.channel('public:bookings')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' }, payload => {
-                    console.log('New booking received!', payload);
-                    const newBooking = payload.new;
-                    if (newBooking.status === 'Pending') {
-                        showBookingNotification(newBooking);
-                    }
-                })
-                .subscribe();
-        }
-
-        function showBookingNotification(booking) {
-            bookingNotification.innerHTML = `
-                <div class="booking-card" id="booking-${booking.id}">
-                    <h3>New Booking Request!</h3>
-                    <p><strong>Service:</strong> ${booking.service}</p>
-                    <p><strong>Address:</strong> ${booking.address}</p>
-                    ${booking.message ? `<p><strong>Query:</strong> ${booking.message}</p>` : ''}
-                    <button class="btn btn-accept" onclick="acceptBooking('${booking.id}')">Accept Job</button>
-                    <button class="btn btn-reject" onclick="hideBooking('${booking.id}')">Ignore</button>
-                </div>
-            `;
+            if (bookingChannel) { db.removeChannel(bookingChannel); }
+            bookingChannel = db.channel('public:bookings').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' }, payload => {
+                if (payload.new.status === 'Pending') { document.getElementById('new-booking-notification').innerHTML = `<div class="booking-card" id="booking-${payload.new.id}"><h3>New Booking!</h3><p><strong>Service:</strong> ${payload.new.service}</p><button class="btn btn-accept" onclick="acceptBooking('${payload.new.id}')">Accept Job</button></div>`;}
+            }).subscribe();
         }
 
         async function acceptBooking(bookingId) {
-            // Update the booking to assign it to the current electrician
-            const { error } = await db.from('bookings')
-                .update({ electrician_id: myProfile.id, status: 'Confirmed' })
-                .eq('id', bookingId);
-            
-            if (error) {
-                alert('Could not accept booking. It might have been taken by someone else.');
-            } else {
-                alert('Booking accepted! You can now see the customer details in your main admin panel.');
-                hideBooking(bookingId);
-            }
+            const { error } = await db.from('bookings').update({ electrician_id: myProfile.id, status: 'Confirmed' }).eq('id', bookingId);
+            if (error) { alert('Could not accept booking.'); }
+            else { alert('Booking accepted!'); document.getElementById(`booking-${bookingId}`).remove(); }
         }
 
-        function hideBooking(bookingId) {
-            const bookingElement = document.getElementById(`booking-${bookingId}`);
-            if(bookingElement) bookingElement.style.display = 'none';
-        }
-
-        // Check if user is already "logged in"
-        const savedPhone = localStorage.getItem('electricianPhone');
-        if (savedPhone) {
-            phoneInput.value = savedPhone;
-            loginBtn.click();
-        }
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('electricianId');
+            if(bookingChannel) db.removeChannel(bookingChannel);
+            window.location.reload();
+        });
     </script>
 </body>
 </html>
