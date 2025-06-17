@@ -23,10 +23,10 @@
         </div>
     </div>
     <script>
-        // --- CHANGE THESE VALUES ---
-        const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co'; // यहाँ अपना Supabase URL पेस्ट करें
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4'; // यहाँ अपनी Supabase anon key पेस्ट करें
-
+        // --- YOUR KEYS ARE ALREADY HERE ---
+        const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4';
+        
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         function openTab(evt, tabName) {
@@ -68,11 +68,13 @@
         document.getElementById('verification-list').addEventListener('click', async e => {
             if (e.target.matches('.btn-verify')) {
                 const id = e.target.dataset.id;
-                e.target.disabled = true; e.target.innerText = "Verifying...";
+                e.target.disabled = true;
+                e.target.innerText = "Verifying...";
                 const { error } = await db.from('electricians').update({ is_verified: true }).eq('id', id);
                 if (error) {
                     alert('Verification failed!');
-                    e.target.disabled = false; e.target.innerText = "Verify This Electrician";
+                    e.target.disabled = false;
+                    e.target.innerText = "Verify This Electrician";
                 } else {
                     alert('Electrician verified!');
                     document.getElementById(`verify-${id}`).remove();
@@ -83,10 +85,9 @@
         async function fetchBookings() {
             const list = document.getElementById('booking-list');
             list.innerHTML = `<div class="loader">Loading...</div>`;
-            // This is the important part: selecting data from two tables
             const { data, error } = await db.from('bookings').select(`*, electricians(name)`).order('created_at', { ascending: false });
             if (error) {
-                console.error("Bookings fetch error:", error); // This will show the exact error in the console
+                console.error("Bookings fetch error:", error);
                 list.innerHTML = `<p>Error loading bookings.</p>`;
                 return;
             }
@@ -103,7 +104,7 @@
             `).join('');
         }
 
-        // Call all fetch functions when the page loads
+        // CORRECTED LINE: Both functions are now called.
         document.addEventListener('DOMContentLoaded', () => {
             fetchVerifications();
             fetchBookings();
