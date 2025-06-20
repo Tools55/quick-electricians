@@ -46,9 +46,9 @@
          <p style="text-align:center; margin-top:1rem;">Already have an account? <a href="partner.html">Login Here</a></p>
     </div>
     <script>
-        // --- YOUR KEYS ARE ADDED HERE ---
-        const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4';
+        // --- YOUR NEW KEYS ARE ADDED HERE ---
+        const SUPABASE_URL = 'https://pdsdxcecqzefupnoifef.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkc2R4Y2VjcXplZnVwbm9pZmVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MjYyNzksImV4cCI6MjA2NTQwMjI3OX0.udrBz6JtnqaYfHJusxINv1BWS-_HI5tf8F2FhMmb6Co';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const video = document.getElementById('selfie-video');
@@ -101,21 +101,19 @@
                     throw new Error('All files and a selfie are required. Please complete all steps.');
                 }
 
-                // Function to upload a file to a specific bucket
                 const uploadFile = async (file, bucket, folder) => {
                     const filePath = `${folder}/${Date.now()}-${file.name}`;
                     const { data, error } = await db.storage.from(bucket).upload(filePath, file);
-                    if (error) throw error; // If error occurs, it will be caught by the try-catch block
+                    if (error) throw error;
                     const { data: urlData } = db.storage.from(bucket).getPublicUrl(data.path);
                     return urlData.publicUrl;
                 };
 
-                // CRITICAL FIX: Ensure bucket names are correct and all lowercase
                 const [aadhaarFrontUrl, aadhaarBackUrl, panUrl, selfieUrl] = await Promise.all([
                     uploadFile(aadhaarFrontFile, 'documents', `aadhaar-front/${phone}`),
                     uploadFile(aadhaarBackFile, 'documents', `aadhaar-back/${phone}`),
                     uploadFile(panFile, 'documents', `pan-card/${phone}`),
-                    uploadFile(selfieBlob, 'selfies', `live-selfie/${phone}`) // Using the same uploadFile function for the blob
+                    uploadFile(selfieBlob, 'selfies', `live-selfie/${phone}`)
                 ]);
 
                 const { error: insertError } = await db.from('electricians').insert({
@@ -141,7 +139,6 @@
                 window.location.href = 'partner.html';
 
             } catch (error) {
-                // This provides a more detailed error message to the user
                 alert('An error occurred: ' + error.message);
                 console.error(error);
                 registerBtn.disabled = false; 
