@@ -6,19 +6,19 @@
     <title>Admin Panel - Quick Electrician</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>:root{--primary-color:#007BFF;--secondary-color:#28a745;--danger-color:#dc3545;--dark-color:#343a40;--light-color:#f8f9fa}body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0}.container{max-width:1200px;margin:2rem auto;padding:0 20px}.tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid #dee2e6;margin-bottom:2rem}.tab-link{padding:1rem 1.5rem;cursor:pointer;border:none;background:none;font-size:1.1rem;font-weight:600;color:#495057}.tab-link.active{color:var(--primary-color);border-bottom:3px solid var(--primary-color)}.tab-content{display:none}.tab-content.active{display:block}header{background:var(--dark-color);color:white;padding:1rem 0;text-align:center;margin-bottom:2rem}.card{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);margin-bottom:2rem;overflow:hidden}.card-header{background:var(--primary-color);color:white;padding:1rem;font-size:1.2rem;font-weight:600}.card-body{padding:1.5rem}.item-list{max-height:80vh;overflow-y:auto}.list-item{padding:1rem;border-bottom:1px solid #eee}.list-item:last-child{border:none}.item-details p{margin:.2rem 0}.item-details strong{color:#555}.document-links a{margin-right:1rem;color:var(--primary-color);font-weight:600;text-decoration:none}.item-actions{margin-top:1rem}.btn-verify{background:var(--secondary-color);color:white;padding:.5rem 1rem;border:none;border-radius:5px;cursor:pointer}.loader{text-align:center;padding:2rem;font-size:1.2rem;}</style>
+    <style>:root{--primary-color:#007BFF;--secondary-color:#28a745;--danger-color:#dc3545;--dark-color:#343a40;--light-color:#f8f9fa}body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0}.container{max-width:1200px;margin:2rem auto;padding:0 20px}.tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid #dee2e6;margin-bottom:2rem}.tab-link{padding:1rem 1.5rem;cursor:pointer;border:none;background:none;font-size:1.1rem;font-weight:600;color:#495057}.tab-link.active{color:var(--primary-color);border-bottom:3px solid var(--primary-color)}.tab-content{display:none}.tab-content.active{display:block}header{background:var(--dark-color);color:white;padding:1rem 0;text-align:center;margin-bottom:2rem}.card{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);margin-bottom:2rem;overflow:hidden}.card-header{background:var(--primary-color);color:white;padding:1rem;font-size:1.2rem;font-weight:600}.card-body{padding:1.5rem}.item-list{max-height:80vh;overflow-y:auto}.list-item{padding:1rem;border-bottom:1px solid #eee}.list-item:last-child{border:none}.item-details p{margin:.2rem 0; word-break: break-all;}.item-details strong{color:#555}.document-links a{margin-right:1rem;color:var(--primary-color);font-weight:600;text-decoration:none}.item-actions{margin-top:1rem}.btn-verify{background:var(--secondary-color);color:white;padding:.5rem 1rem;border:none;border-radius:5px;cursor:pointer}.loader{text-align:center;padding:2rem;font-size:1.2rem;}</style>
 </head>
 <body>
     <header><h1>Quick Electrician - Admin Panel</h1></header>
     <div class="container">
         <div class="tabs">
             <button class="tab-link active" onclick="openTab(event, 'VerifyElectricians')">Verify Electricians</button>
-            <button class="tab-link" onclick="openTab(event, 'Bookings')">All Bookings</button>
+            <button class="tab-link" onclick="openTab(event, 'AllBookings')">All Bookings</button>
         </div>
         <div id="VerifyElectricians" class="tab-content active">
             <div class="card"><div class="card-header">Pending Verifications</div><div class="card-body"><div class="item-list" id="verification-list"></div></div></div>
         </div>
-        <div id="Bookings" class="tab-content">
+        <div id="AllBookings" class="tab-content">
             <div class="card"><div class="card-header">Manage All Bookings</div><div class="card-body"><div class="item-list" id="booking-list"></div></div></div>
         </div>
     </div>
@@ -49,32 +49,37 @@
                 list.innerHTML = `<p>No new electricians to verify.</p>`;
                 return;
             }
-            list.innerHTML = data.map(e => `
+            list.innerHTML = data.map(e => {
+                // CRITICAL FIX: Ensure URLs are valid before creating links
+                const aadhaarFront = e.aadhaar_front_url ? `<a href="${e.aadhaar_front_url}" target="_blank">Aadhaar Front</a>` : '<span>Aadhaar Front: Not available</span>';
+                const aadhaarBack = e.aadhaar_back_url ? `<a href="${e.aadhaar_back_url}" target="_blank">Aadhaar Back</a>` : '<span>Aadhaar Back: Not available</span>';
+                const panCard = e.pan_card_url ? `<a href="${e.pan_card_url}" target="_blank">PAN Card</a>` : '<span>PAN Card: Not available</span>';
+                const selfie = e.selfie_url ? `<a href="${e.selfie_url}" target="_blank">Live Selfie</a>` : '<span>Selfie: Not available</span>';
+
+                return `
                 <div class="list-item" id="verify-${e.id}">
                     <div class="item-details">
-                        <p><strong>Name:</strong> ${e.name}</p><p><strong>Phone:</strong> ${e.phone}</p>
-                        <p><strong>Email:</strong> ${e.email}</p><p><strong>PAN:</strong> ${e.pan_number}</p>
+                        <p><strong>Name:</strong> ${e.name}</p>
+                        <p><strong>Phone:</strong> ${e.phone}</p>
+                        <p><strong>Email:</strong> ${e.email}</p>
+                        <p><strong>PAN:</strong> ${e.pan_number}</p>
                     </div>
                     <div class="document-links">
-                        <a href="${e.aadhaar_front_url}" target="_blank">Aadhaar Front</a> |
-                        <a href="${e.aadhaar_back_url}" target="_blank">Aadhaar Back</a> |
-                        <a href="${e.pan_card_url}" target="_blank">PAN Card</a> |
-                        <a href="${e.selfie_url}" target="_blank">Live Selfie</a>
+                        ${aadhaarFront} | ${aadhaarBack} | ${panCard} | ${selfie}
                     </div>
                     <div class="item-actions"><button class="btn-verify" data-id="${e.id}">Verify This Electrician</button></div>
-                </div>`).join('');
+                </div>`
+            }).join('');
         }
         
         document.getElementById('verification-list').addEventListener('click', async e => {
             if (e.target.matches('.btn-verify')) {
                 const id = e.target.dataset.id;
-                e.target.disabled = true;
-                e.target.innerText = "Verifying...";
+                e.target.disabled = true; e.target.innerText = "Verifying...";
                 const { error } = await db.from('electricians').update({ is_verified: true }).eq('id', id);
                 if (error) {
                     alert('Verification failed!');
-                    e.target.disabled = false;
-                    e.target.innerText = "Verify This Electrician";
+                    e.target.disabled = false; e.target.innerText = "Verify This Electrician";
                 } else {
                     alert('Electrician verified!');
                     document.getElementById(`verify-${id}`).remove();
@@ -104,7 +109,6 @@
             `).join('');
         }
 
-        // CORRECTED LINE: Both functions are now called.
         document.addEventListener('DOMContentLoaded', () => {
             fetchVerifications();
             fetchBookings();
