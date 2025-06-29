@@ -27,8 +27,8 @@
         </div>
     </div>
     <script>
-        const SUPABASE_URL = 'https://yswfdprinxrfqexbyzjo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzd2ZkcHJpbnhyZnFleGJ5empvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MzgzMTUsImV4cCI6MjA2NTQxNDMxNX0.LnHAETA_8Z3kMGfqNCFFvwnZJkiE3oWWZNeqg2Csc-4';
+        const SUPABASE_URL = 'https://pdsdxcecqzefupnoifef.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkc2R4Y2VjcXplZnVwbm9pZmVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MjYyNzksImV4cCI6MjA2NTQwMjI3OX0.udrBz6JtnqaYfHJusxINv1BWS-_HI5tf8F2FhMmb6Co';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let myProfile = null; let bookingChannel = null;
         const loginSection = document.getElementById('login-section');
@@ -38,10 +38,13 @@
             e.preventDefault();
             const phone = document.getElementById('phone').value;
             const password = document.getElementById('password').value;
+            
             const { data, error } = await db.from('electricians').select().eq('phone', phone).single();
+
             if (error || !data) return alert('Login failed: User not found.');
             if (!data.is_verified) return alert('Login failed: Your account is not yet verified by the admin.');
             if (data.password !== password) return alert('Login failed: Incorrect password.');
+            
             myProfile = data;
             localStorage.setItem('electricianId', myProfile.id);
             showDashboard();
@@ -51,7 +54,8 @@
             const loggedInId = localStorage.getItem('electricianId');
             if (loggedInId) {
                 const { data, error } = await db.from('electricians').select().eq('id', loggedInId).single();
-                if (data) { myProfile = data; showDashboard(); }
+                if (data && data.is_verified) { myProfile = data; showDashboard(); }
+                else { localStorage.removeItem('electricianId'); }
             }
         }
         checkLogin();
@@ -77,13 +81,13 @@
         function listenForNewBookings() {
             if (bookingChannel) { db.removeChannel(bookingChannel); }
             bookingChannel = db.channel('public:bookings').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bookings' }, payload => {
-                if (payload.new.status === 'Pending') { document.getElementById('new-booking-notification').innerHTML = `<div class="booking-card" id="booking-${payload.new.id}"><h3>New Booking!</h3><p><strong>Service:</strong> ${payload.new.service}</p><button class="btn btn-accept" onclick="acceptBooking('${payload.new.id}')">Accept Job</button></div>`;}
+                if (payload.new.status === 'Pending' && myProfile.is_online) { document.getElementById('new-booking-notification').innerHTML = `<div class="booking-card" id="booking-${payload.new.id}"><h3>New Booking!</h3><p><strong>Service:</strong> ${payload.new.service}</p><button class="btn btn-accept" onclick="acceptBooking('${payload.new.id}')">Accept Job</button></div>`;}
             }).subscribe();
         }
 
         async function acceptBooking(bookingId) {
-            const { error } = await db.from('bookings').update({ electrician_id: myProfile.id, status: 'Confirmed' }).eq('id', bookingId);
-            if (error) { alert('Could not accept booking.'); }
+            const { error } = await db.from('bookings').update({ electrician_id: myProfile.id, status: 'Confirmed' }).eq('id', bookingId).eq('status', 'Pending');
+            if (error) { alert('Could not accept booking. It might be taken.'); }
             else { alert('Booking accepted!'); document.getElementById(`booking-${bookingId}`).remove(); }
         }
 
