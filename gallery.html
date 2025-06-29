@@ -19,78 +19,28 @@
         .main-nav::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px}
         .main-nav a{text-decoration:none;color:var(--dark-color);font-weight:600;padding:5px 8px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .3s}
         .main-nav a:hover,.main-nav a.active{color:var(--primary-color);border-color:var(--primary-color)}
+        .ad-slot-top{text-align:center;padding:10px 0;background-color:#f0f0f0;min-height:90px;display:flex;align-items:center;justify-content:center;overflow:hidden}
         .section{padding:4rem 0}.section-title{text-align:center;font-size:2.2rem;margin-bottom:3rem;color:var(--primary-color)}
         
-        /* New Slider Styles */
-        .slider-container {
-            max-width: 800px;
-            position: relative;
-            margin: auto;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .slide {
-            display: none;
-            width: 100%;
-        }
-        .slide img {
-            width: 100%;
-            height: 500px; /* Fixed height for all images */
-            object-fit: cover; /* This will cover the area, might crop images */
-            vertical-align: middle;
-        }
-        .prev, .next {
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            width: auto;
-            padding: 16px;
-            margin-top: -22px;
-            color: white;
-            font-weight: bold;
-            font-size: 24px;
-            transition: 0.6s ease;
-            border-radius: 0 3px 3px 0;
-            user-select: none;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .next {
-            right: 0;
-            border-radius: 3px 0 0 3px;
-        }
-        .prev:hover, .next:hover {
-            background-color: rgba(0,0,0,0.8);
-        }
-        .dots-container {
-            text-align: center;
-            padding: 20px 0;
-        }
-        .dot {
-            cursor: pointer;
-            height: 15px;
-            width: 15px;
-            margin: 0 2px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.6s ease;
-        }
-        .active-dot, .dot:hover {
-            background-color: var(--primary-color);
-        }
-        .fade {
-            animation-name: fade;
-            animation-duration: 1.5s;
-        }
-        @keyframes fade {
-            from {opacity: .4} 
-            to {opacity: 1}
-        }
+        /* Slider Styles */
+        .slider-container{max-width:800px;position:relative;margin:auto;box-shadow:0 10px 20px rgba(0,0,0,.2);border-radius:10px;overflow:hidden}
+        .slide{display:none;width:100%}.slide img{width:100%;height:500px;object-fit:cover;vertical-align:middle}
+        .prev,.next{cursor:pointer;position:absolute;top:50%;width:auto;padding:16px;margin-top:-22px;color:white;font-weight:bold;font-size:24px;transition:.6s ease;border-radius:0 3px 3px 0;user-select:none;background-color:rgba(0,0,0,.5)}
+        .next{right:0;border-radius:3px 0 0 3px}.prev:hover,.next:hover{background-color:rgba(0,0,0,.8)}
+        .dots-container{text-align:center;padding:20px 0}
+        .dot{cursor:pointer;height:15px;width:15px;margin:0 2px;background-color:#bbb;border-radius:50%;display:inline-block;transition:background-color .6s ease}
+        .active-dot,.dot:hover{background-color:var(--primary-color)}
+        .fade{animation-name:fade;animation-duration:1.5s}@keyframes fade{from{opacity:.4}to{opacity:1}}
+        
         .video-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;background:#000;border-radius:8px;margin:1rem auto;max-width:800px}
         .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%}
+        
+        footer{background:var(--dark-color);color:var(--light-color);text-align:center;padding:3rem 0 1.5rem 0}
+        /* ... Other footer styles ... */
+        
         @media (max-width: 600px) {
             .slide img { height: 300px; }
+            .main-nav a { padding: 5px; gap: .8rem; }
         }
     </style>
 </head>
@@ -110,6 +60,22 @@
         </div>
     </header>
 
+    <!-- ================================== -->
+    <!-- TOP BANNER AD (728x90) -->
+    <!-- ================================== -->
+    <div class="ad-slot-top">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : 'b35605310d7c598daf6d6f711fac358b',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/b35605310d7c598daf6d6f711fac358b/invoke.js"></script>
+    </div>
+
     <main>
         <section class="section">
             <div class="container">
@@ -125,6 +91,22 @@
                     <!-- Dots will be generated by JavaScript -->
                 </div>
 
+                <!-- ================================== -->
+                <!-- BOTTOM BANNER AD (300x250) -->
+                <!-- ================================== -->
+                <div style="text-align: center; padding: 20px 0;">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '0ba6209868f5caf024c80c56a26d19f3',
+                            'format' : 'iframe',
+                            'height' : 250,
+                            'width' : 300,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/0ba6209868f5caf024c80c56a26d19f3/invoke.js"></script>
+                </div>
+                
                 <h2 style="margin-top: 4rem; text-align: center;">Videos of Our Projects</h2>
                 <div class="video-container">
                     <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -135,17 +117,11 @@
     
     <footer id="contact">
         <div class="container">
-            <!-- Footer content goes here -->
+            <!-- Your footer content goes here -->
         </div>
     </footer>
 
     <script>
-        // --- SLIDER JAVASCRIPT ---
-
-        // =================================================================
-        // STEP 1: बाद में अपनी तस्वीरें यहाँ डालें
-        // आपको सिर्फ इस लिस्ट को बदलना है।
-        // =================================================================
         const imageUrls = [
             'https://raw.githubusercontent.com/Tools55/quick-electricians/main/images/Picsart_25-06-17_00-04-54-881.jpg',
             'https://raw.githubusercontent.com/Tools55/quick-electricians/main/images/Picsart_25-06-17_00-32-48-510.jpg',
@@ -159,17 +135,13 @@
         const sliderContainer = document.getElementById('image-slider');
         const dotsContainer = document.getElementById('dots-container');
 
-        // Create slides and dots from the imageUrls array
         imageUrls.forEach((url, index) => {
-            // Create slide
             const slideDiv = document.createElement('div');
             slideDiv.className = 'slide fade';
             const img = document.createElement('img');
             img.src = url;
             slideDiv.appendChild(img);
             sliderContainer.insertBefore(slideDiv, sliderContainer.lastElementChild.previousElementSibling);
-
-            // Create dot
             const dotSpan = document.createElement('span');
             dotSpan.className = 'dot';
             dotSpan.setAttribute('onclick', `currentSlide(${index + 1})`);
@@ -178,8 +150,6 @@
 
         let slideIndex = 1;
         let slideInterval;
-
-        // Function to show slides
         function showSlides(n) {
             let i;
             let slides = document.getElementsByClassName("slide");
@@ -195,32 +165,23 @@
             slides[slideIndex - 1].style.display = "block";
             dots[slideIndex - 1].className += " active-dot";
         }
-
-        // Next/previous controls
         function plusSlides(n) {
-            clearTimeout(slideInterval); // Stop auto slide on manual click
+            clearTimeout(slideInterval);
             showSlides(slideIndex += n);
-            startSlideShow(); // Restart auto slide
+            startSlideShow();
         }
-
-        // Thumbnail image controls
         function currentSlide(n) {
             clearTimeout(slideInterval);
             showSlides(slideIndex = n);
             startSlideShow();
         }
-        
-        // Auto slide show
         function startSlideShow() {
             slideInterval = setTimeout(() => {
                 plusSlides(1);
-            }, 4000); // Change image every 4 seconds
+            }, 4000);
         }
-
-        // Initial setup
         showSlides(slideIndex);
         startSlideShow();
-
     </script>
 </body>
 </html>
