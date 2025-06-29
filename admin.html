@@ -6,7 +6,7 @@
     <title>Admin Panel - Quick Electrician</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>:root{--primary-color:#007BFF;--secondary-color:#28a745;--danger-color:#dc3545;--dark-color:#343a40;--light-color:#f8f9fa}body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0}.container{max-width:1200px;margin:2rem auto;padding:0 20px}.tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid #dee2e6;margin-bottom:2rem}.tab-link{padding:.8rem 1rem;cursor:pointer;border:none;background:none;font-size:1rem;font-weight:600;color:#495057}.tab-link.active{color:var(--primary-color);border-bottom:3px solid var(--primary-color)}.tab-content{display:none}.tab-content.active{display:block}header{background:var(--dark-color);color:white;padding:1rem 0;text-align:center;margin-bottom:2rem}.card{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);margin-bottom:2rem;overflow:hidden}.card-header{background:var(--primary-color);color:white;padding:1rem;font-size:1.2rem;font-weight:600}.card-body{padding:1.5rem}.item-list{max-height:80vh;overflow-y:auto}.list-item{padding:1rem;border-bottom:1px solid #eee}.list-item:last-child{border:none}.item-details p{margin:.2rem 0;word-break:break-word}.item-details strong{color:#555}.item-actions{margin-top:1rem}.btn{padding:.5rem 1rem;border:none;border-radius:5px;color:white;cursor:pointer}.btn-verify{background:var(--secondary-color)}.btn-delete{background:var(--danger-color);margin-left:10px}.loader{text-align:center;padding:2rem;font-size:1.2rem;}</style>
+    <style>:root{--primary-color:#007BFF;--secondary-color:#28a745;--danger-color:#dc3545;--warning-color:#ffc107;--info-color:#17a2b8;--dark-color:#343a40;--light-color:#f8f9fa}body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0}.container{max-width:1200px;margin:2rem auto;padding:0 20px}.tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid #dee2e6;margin-bottom:2rem}.tab-link{padding:.8rem 1rem;cursor:pointer;border:none;background:none;font-size:1rem;font-weight:600;color:#495057}.tab-link.active{color:var(--primary-color);border-bottom:3px solid var(--primary-color)}.tab-content{display:none}.tab-content.active{display:block}header{background:var(--dark-color);color:white;padding:1rem 0;text-align:center;margin-bottom:2rem}.card{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);margin-bottom:2rem;overflow:hidden}.card-header{background:var(--primary-color);color:white;padding:1rem;font-size:1.2rem;font-weight:600}.card-body{padding:1.5rem}.item-list{max-height:80vh;overflow-y:auto}.list-item{padding:1rem;border-bottom:1px solid #eee}.list-item:last-child{border:none}.item-details p{margin:.2rem 0;word-break:break-word}.item-details strong{color:#555}.item-actions{margin-top:1rem}.btn{padding:.5rem 1rem;border:none;border-radius:5px;color:white;cursor:pointer;margin-right: 10px;}.btn-verify{background:var(--secondary-color)}.btn-complete{background:var(--info-color)}.btn-cancel{background:var(--danger-color)}.btn-delete{background:var(--danger-color)}.loader{text-align:center;padding:2rem;font-size:1.2rem;}.status-tag{padding:.25rem .6rem;border-radius:15px;color:white;font-size:.8rem;font-weight:600}.status-Pending{background:var(--warning-color);color:var(--dark-color)}.status-Confirmed{background:var(--info-color)}.status-Completed{background:var(--secondary-color)}.status-Cancelled{background:var(--danger-color)}</style>
 </head>
 <body>
     <header><h1>Quick Electrician - Admin Panel</h1></header>
@@ -31,14 +31,14 @@
             const list=document.getElementById('verification-list');list.innerHTML=`<div class="loader">Loading...</div>`;
             const{data,error}=await db.from('electricians').select().eq('is_verified',!1).order('created_at');
             if(error||!data.length){list.innerHTML=`<p>No new electricians to verify.</p>`;return}
-            list.innerHTML=data.map(e=>`<div class="list-item" id="verify-${e.id}"><div class="item-details"><p><strong>Name:</strong> ${e.name}</p><p><strong>Phone:</strong> ${e.phone}</p><p><strong>Email:</strong> ${e.email}</p><p><strong>Address:</strong> ${e.address}, ${e.district} - ${e.pin_code}</p><p><strong>Experience:</strong> ${e.experience}</p></div><div class="item-actions"><button class="btn btn-verify" data-id="${e.id}">Verify</button><button class="btn btn-delete" data-id="${e.id}">Delete</button></div></div>`).join('')
+            list.innerHTML=data.map(e=>`<div class="list-item" id="verify-${e.id}"><div class="item-details"><p><strong>Name:</strong> ${e.name}</p><p><strong>Phone:</strong> ${e.phone}</p><p><strong>Address:</strong> ${e.address}, ${e.district} - ${e.pin_code}</p></div><div class="item-actions"><button class="btn btn-verify" data-id="${e.id}">Verify</button><button class="btn btn-delete" data-id="${e.id}">Delete</button></div></div>`).join('')
         }
 
         async function fetchAllElectricians(){
             const list=document.getElementById('all-electricians-list');list.innerHTML=`<div class="loader">Loading...</div>`;
             const{data,error}=await db.from('electricians').select().order('created_at',{ascending:!1});
             if(error||!data.length){list.innerHTML=`<p>No electricians found.</p>`;return}
-            list.innerHTML=data.map(e=>`<div class="list-item"><p><strong>${e.name}</strong> (${e.phone}) - <strong>Status:</strong> ${e.is_verified?"Verified":"Pending"}</p></div>`).join('')
+            list.innerHTML=data.map(e=>`<div class="list-item"><p><strong>${e.name}</strong> (${e.phone}) - <span class="status-tag status-${e.is_verified?"Completed":"Pending"}">${e.is_verified?"Verified":"Pending"}</span></p></div>`).join('')
         }
         
         document.getElementById('verification-list').addEventListener('click',async e=>{
@@ -59,8 +59,21 @@
             const list=document.getElementById('booking-list');list.innerHTML=`<div class="loader">Loading...</div>`;
             const{data,error}=await db.from('bookings').select(`*, electricians(name)`).order('created_at',{ascending:!1});
             if(error||!data.length){list.innerHTML=`<p>No bookings found.</p>`;return}
-            list.innerHTML=data.map(e=>`<div class="list-item"><p><strong>Service:</strong> ${e.service} | <strong>Status:</strong> ${e.status}</p><p><strong>Customer:</strong> ${e.name} (${e.phone})</p><p><strong>Assigned To:</strong> ${e.electricians?e.electricians.name:'Not Assigned'}</p></div>`).join('')
+            list.innerHTML=data.map(e=>`<div class="list-item" id="booking-item-${e.id}"><div class="item-details"><p><strong>Service:</strong> ${e.service}</p><p><strong>Customer:</strong> ${e.name} (${e.phone})</p><p><strong>Assigned To:</strong> ${e.electricians?e.electricians.name:'Not Assigned'}</p><p><strong>Status:</strong> <span class="status-tag status-${e.status}">${e.status}</span></p></div><div class="item-actions"><button class="btn btn-verify" data-id="${e.id}">Confirm</button><button class="btn btn-complete" data-id="${e.id}">Complete</button><button class="btn btn-cancel" data-id="${e.id}">Cancel</button></div></div>`).join('')
         }
+        
+        document.getElementById('booking-list').addEventListener('click',async e=>{
+            if(e.target.matches('button')){
+                const id=e.target.dataset.id; let newStatus='';
+                if(e.target.classList.contains('btn-verify'))newStatus='Confirmed';
+                else if(e.target.classList.contains('btn-complete'))newStatus='Completed';
+                else if(e.target.classList.contains('btn-cancel'))newStatus='Cancelled';
+                if(newStatus){
+                    const{error}=await db.from('bookings').update({status:newStatus}).eq('id',id);
+                    if(error)alert('Failed to update status.');else{alert(`Booking status updated to ${newStatus}.`);fetchBookings()}
+                }
+            }
+        });
 
         document.addEventListener('DOMContentLoaded',()=>{fetchVerifications();fetchAllElectricians();fetchBookings()});
     </script>
