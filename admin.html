@@ -6,28 +6,7 @@
     <title>Admin Panel - Quick Electrician</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root{--primary-color:#007BFF;--secondary-color:#28a745;--danger-color:#dc3545;--dark-color:#343a40;--light-color:#f8f9fa}
-        body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0}
-        .container{max-width:1200px;margin:2rem auto;padding:0 20px}
-        .tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid #dee2e6;margin-bottom:2rem}
-        .tab-link{padding:.8rem 1rem;cursor:pointer;border:none;background:none;font-size:1rem;font-weight:600;color:#495057}
-        .tab-link.active{color:var(--primary-color);border-bottom:3px solid var(--primary-color)}
-        .tab-content{display:none}.tab-content.active{display:block}
-        header{background:var(--dark-color);color:white;padding:1rem 0;text-align:center;margin-bottom:2rem}
-        .card{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);margin-bottom:2rem;overflow:hidden}
-        .card-header{background:var(--primary-color);color:white;padding:1rem;font-size:1.2rem;font-weight:600}
-        .card-body{padding:1.5rem}
-        .item-list{max-height:80vh;overflow-y:auto}
-        .list-item{padding:1rem;border-bottom:1px solid #eee}.list-item:last-child{border:none}
-        .item-details p{margin:.2rem 0;word-break:break-all}.item-details strong{color:#555}
-        .document-links a{margin-right:1rem;color:var(--primary-color);font-weight:600;text-decoration:none}
-        .item-actions{margin-top:1rem}
-        .btn{padding:.5rem 1rem;border:none;border-radius:5px;color:white;cursor:pointer}
-        .btn-verify{background:var(--secondary-color)}
-        .btn-delete{background:var(--danger-color);margin-left:10px}
-        .loader{text-align:center;padding:2rem;font-size:1.2rem;}
-    </style>
+    <style>:root{--primary-color:#007BFF;--secondary-color:#28a745;--danger-color:#dc3545;--dark-color:#343a40;--light-color:#f8f9fa}body{font-family:'Poppins',sans-serif;background-color:var(--light-color);color:var(--dark-color);margin:0}.container{max-width:1200px;margin:2rem auto;padding:0 20px}.tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid #dee2e6;margin-bottom:2rem}.tab-link{padding:.8rem 1rem;cursor:pointer;border:none;background:none;font-size:1rem;font-weight:600;color:#495057}.tab-link.active{color:var(--primary-color);border-bottom:3px solid var(--primary-color)}.tab-content{display:none}.tab-content.active{display:block}header{background:var(--dark-color);color:white;padding:1rem 0;text-align:center;margin-bottom:2rem}.card{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);margin-bottom:2rem;overflow:hidden}.card-header{background:var(--primary-color);color:white;padding:1rem;font-size:1.2rem;font-weight:600}.card-body{padding:1.5rem}.item-list{max-height:80vh;overflow-y:auto}.list-item{padding:1rem;border-bottom:1px solid #eee}.list-item:last-child{border:none}.item-details p{margin:.2rem 0;word-break:break-all}.item-details strong{color:#555}.document-links a{margin-right:1rem;color:var(--primary-color);font-weight:600;text-decoration:none}.item-actions{margin-top:1rem}.btn{padding:.5rem 1rem;border:none;border-radius:5px;color:white;cursor:pointer}.btn-verify{background:var(--secondary-color)}.btn-delete{background:var(--danger-color);margin-left:10px}.loader{text-align:center;padding:2rem;font-size:1.2rem;}</style>
 </head>
 <body>
     <header><h1>Quick Electrician - Admin Panel</h1></header>
@@ -42,122 +21,48 @@
         <div id="AllBookings" class="tab-content"><div class="card"><div class="card-header">Manage All Bookings</div><div class="card-body"><div class="item-list" id="booking-list"></div></div></div></div>
     </div>
     <script>
-        // --- YOUR NEW KEYS ARE ADDED HERE ---
         const SUPABASE_URL = 'https://pdsdxcecqzefupnoifef.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkc2R4Y2VjcXplZnVwbm9pZmVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MjYyNzksImV4cCI6MjA2NTQwMjI3OX0.udrBz6JtnqaYfHJusxINv1BWS-_HI5tf8F2FhMmb6Co';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function openTab(evt, tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-            document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('active'));
-            document.getElementById(tabName).style.display = 'block';
-            evt.currentTarget.classList.add('active');
-        }
+        function openTab(e,t){document.querySelectorAll(".tab-content").forEach(e=>e.style.display="none"),document.querySelectorAll(".tab-link").forEach(e=>e.classList.remove("active")),document.getElementById(t).style.display="block",e.currentTarget.classList.add("active")}
         
-        async function fetchVerifications() {
-            const list = document.getElementById('verification-list');
-            list.innerHTML = `<div class="loader">Loading Verifications...</div>`;
-            const { data, error } = await db.from('electricians').select().eq('is_verified', false).order('created_at');
-            if (error) {
-                console.error("Verification fetch error:", error);
-                list.innerHTML = `<p>Error loading verifications.</p>`;
-                return;
-            }
-            if (!data.length) {
-                list.innerHTML = `<p>No new electricians to verify.</p>`;
-                return;
-            }
-            list.innerHTML = data.map(e => `
-                <div class="list-item" id="verify-${e.id}">
-                    <div class="item-details">
-                        <p><strong>Name:</strong> ${e.name}</p><p><strong>Phone:</strong> ${e.phone}</p>
-                        <p><strong>Email:</strong> ${e.email}</p><p><strong>PAN:</strong> ${e.pan_number}</p>
-                    </div>
-                    <div class="document-links">
-                        <a href="${e.aadhaar_front_url}" target="_blank">Aadhaar Front</a> | 
-                        <a href="${e.aadhaar_back_url}" target="_blank">Aadhaar Back</a> | 
-                        <a href="${e.pan_card_url}" target="_blank">PAN Card</a> | 
-                        <a href="${e.selfie_url}" target="_blank">Live Selfie</a>
-                    </div>
-                    <div class="item-actions">
-                        <button class="btn btn-verify" data-id="${e.id}">Verify</button>
-                        <button class="btn btn-delete" data-id="${e.id}">Delete</button>
-                    </div>
-                </div>`).join('');
+        async function fetchVerifications(){
+            const list=document.getElementById('verification-list');list.innerHTML=`<div class="loader">Loading...</div>`;
+            const{data,error}=await db.from('electricians').select().eq('is_verified',!1).order('created_at');
+            if(error||!data.length){list.innerHTML=`<p>No new electricians to verify.</p>`;return}
+            list.innerHTML=data.map(e=>`<div class="list-item" id="verify-${e.id}"><div class="item-details"><p><strong>Name:</strong> ${e.name}</p><p><strong>Phone:</strong> ${e.phone}</p><p><strong>Email:</strong> ${e.email}</p><p><strong>PAN:</strong> ${e.pan_number}</p></div><div class="document-links"><a href="${e.aadhaar_front_url}" target="_blank">Aadhaar Front</a> | <a href="${e.aadhaar_back_url}" target="_blank">Aadhaar Back</a> | <a href="${e.pan_card_url}" target="_blank">PAN Card</a> | <a href="${e.selfie_url}" target="_blank">Live Selfie</a></div><div class="item-actions"><button class="btn btn-verify" data-id="${e.id}">Verify</button><button class="btn btn-delete" data-id="${e.id}">Delete</button></div></div>`).join('')
         }
 
-        async function fetchAllElectricians() {
-            const list = document.getElementById('all-electricians-list');
-            list.innerHTML = `<div class="loader">Loading All Electricians...</div>`;
-            const { data, error } = await db.from('electricians').select().order('created_at', { ascending: false });
-            if (error) {
-                console.error("All electricians fetch error:", error);
-                list.innerHTML = `<p>Error loading electricians.</p>`;
-                return;
-            }
-            if (!data.length) {
-                list.innerHTML = `<p>No electricians found.</p>`;
-                return;
-            }
-            list.innerHTML = data.map(e => `
-                <div class="list-item">
-                    <p><strong>${e.name}</strong> (${e.phone}) - <strong>Status:</strong> ${e.is_verified ? "Verified" : "Pending"}</p>
-                </div>`).join('');
+        async function fetchAllElectricians(){
+            const list=document.getElementById('all-electricians-list');list.innerHTML=`<div class="loader">Loading...</div>`;
+            const{data,error}=await db.from('electricians').select().order('created_at',{ascending:!1});
+            if(error||!data.length){list.innerHTML=`<p>No electricians found.</p>`;return}
+            list.innerHTML=data.map(e=>`<div class="list-item"><p><strong>${e.name}</strong> (${e.phone}) - <strong>Status:</strong> ${e.is_verified?"Verified":"Pending"}</p></div>`).join('')
         }
         
-        document.getElementById('verification-list').addEventListener('click', async e => {
-            if (e.target.matches('.btn-verify')) {
-                const id = e.target.dataset.id;
-                e.target.disabled = true;
-                const { error } = await db.from('electricians').update({ is_verified: true }).eq('id', id);
-                if (error) {
-                    alert('Verification failed!');
-                } else {
-                    alert('Electrician verified!');
-                    fetchVerifications(); // Refresh lists
-                    fetchAllElectricians();
-                }
-            } else if (e.target.matches('.btn-delete')) {
-                const id = e.target.dataset.id;
-                if (confirm('Are you sure you want to delete this applicant?')) {
-                    const { error } = await db.from('electricians').delete().eq('id', id);
-                    if (error) {
-                        alert('Could not delete.');
-                    } else {
-                        alert('Applicant deleted.');
-                        fetchVerifications();
-                        fetchAllElectricians();
-                    }
+        document.getElementById('verification-list').addEventListener('click',async e=>{
+            if(e.target.matches('.btn-verify')){
+                const id=e.target.dataset.id;e.target.disabled=!0;
+                const{error}=await db.from('electricians').update({is_verified:!0}).eq('id',id);
+                if(error)alert('Verification failed!');else{alert('Electrician verified!');document.getElementById(`verify-${id}`).remove();fetchAllElectricians()}
+            } else if(e.target.matches('.btn-delete')){
+                const id=e.target.dataset.id;
+                if(confirm('Are you sure you want to delete this applicant?')){
+                    const{error}=await db.from('electricians').delete().eq('id',id);
+                    if(error)alert('Could not delete.');else{alert('Applicant deleted.');document.getElementById(`verify-${id}`).remove()}
                 }
             }
         });
         
-        async function fetchBookings() {
-            const list = document.getElementById('booking-list');
-            list.innerHTML = `<div class="loader">Loading Bookings...</div>`;
-            const { data, error } = await db.from('bookings').select(`*, electricians(name)`).order('created_at', { ascending: false });
-            if (error) {
-                console.error("Bookings fetch error:", error);
-                list.innerHTML = `<p>Error loading bookings. Check RLS policies on 'bookings' table.</p>`;
-                return;
-            }
-            if (!data.length) {
-                list.innerHTML = `<p>No bookings found.</p>`;
-                return;
-            }
-            list.innerHTML = data.map(e => `
-                <div class="list-item">
-                    <p><strong>Service:</strong> ${e.service} | <strong>Status:</strong> ${e.status}</p>
-                    <p><strong>Customer:</strong> ${e.name} (${e.phone})</p>
-                    <p><strong>Assigned To:</strong> ${e.electricians ? e.electricians.name : 'Not Assigned'}</p>
-                </div>`).join('');
+        async function fetchBookings(){
+            const list=document.getElementById('booking-list');list.innerHTML=`<div class="loader">Loading...</div>`;
+            const{data,error}=await db.from('bookings').select(`*, electricians(name)`).order('created_at',{ascending:!1});
+            if(error||!data.length){list.innerHTML=`<p>No bookings found.</p>`;return}
+            list.innerHTML=data.map(e=>`<div class="list-item"><p><strong>Service:</strong> ${e.service} | <strong>Status:</strong> ${e.status}</p><p><strong>Customer:</strong> ${e.name} (${e.phone})</p><p><strong>Assigned To:</strong> ${e.electricians?e.electricians.name:'Not Assigned'}</p></div>`).join('')
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchVerifications();
-            fetchAllElectricians();
-            fetchBookings();
-        });
+        document.addEventListener('DOMContentLoaded',()=>{fetchVerifications();fetchAllElectricians();fetchBookings()});
     </script>
 </body>
 </html>
