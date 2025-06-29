@@ -56,6 +56,7 @@
     </style>
 </head>
 <body>
+
     <header>
         <div class="container">
             <a href="index.html" class="logo">Quick Electrician</a>
@@ -69,12 +70,20 @@
             </nav>
         </div>
     </header>
+
     <div class="ad-slot-top">
         <script type="text/javascript">
-            atOptions = {'key' : 'b35605310d7c598daf6d6f711fac358b','format' : 'iframe','height' : 90,'width' : 728,'params' : {}};
+            atOptions = {
+                'key' : 'b35605310d7c598daf6d6f711fac358b',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
         </script>
         <script type="text/javascript" src="//www.highperformanceformat.com/b35605310d7c598daf6d6f711fac358b/invoke.js"></script>
     </div>
+
     <main>
         <section id="hero">
             <div class="container">
@@ -99,19 +108,23 @@
                 </div>
             </div>
         </section>
+
         <section id="my-bookings" class="section section-light">
             <div class="container">
                 <h2 class="section-title">Your Recent Bookings</h2>
                 <div id="booking-history-list"><p>You have no recent bookings. Fill the form above to create one!</p></div>
             </div>
         </section>
+
         <div class="container" style="text-align: center; padding: 20px 0;">
             <script type="text/javascript">
                 atOptions = {'key' : '0ba6209868f5caf024c80c56a26d19f3','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};
             </script>
             <script type="text/javascript" src="//www.highperformanceformat.com/0ba6209868f5caf024c80c56a26d19f3/invoke.js"></script>
         </div>
+
     </main>
+    
     <footer id="contact">
         <div class="container">
             <div class="footer-content">
@@ -129,12 +142,16 @@
             </div>
         </div>
     </footer>
+    
     <script>
+        // --- YOUR KEYS ARE ADDED HERE ---
         const SUPABASE_URL = 'https://pdsdxcecqzefupnoifef.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkc2R4Y2VjcXplZnVwbm9pZmVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk4MjYyNzksImV4cCI6MjA2NTQwMjI3OX0.udrBz6JtnqaYfHJusxINv1BWS-_HI5tf8F2FhMmb6Co';
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         document.addEventListener('DOMContentLoaded',()=>loadMyBookings());
         const bookingHistoryList=document.getElementById('booking-history-list');
+        
         async function loadMyBookings(){
             const o=JSON.parse(localStorage.getItem('myBookingIds'))||[];
             if(0===o.length) return void(bookingHistoryList.innerHTML='<p>You have no recent bookings. Fill the form above to create one!</p>');
@@ -159,6 +176,7 @@
                 bookingHistoryList.innerHTML = '<p>Could not load your booking history.</p>';
             }
         }
+        
         document.getElementById('main-form').addEventListener('submit',async function(o){
             o.preventDefault();
             const e=o.target,t=e.querySelector('.submit-btn');
